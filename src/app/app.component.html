@@ -1,4 +1,25 @@
-<h1>{{ year }}</h1>
-<ng-container *ngIf=""> </ng-container>
-<app-drivers-table [drivers]="drivers$ | async"></app-drivers-table>
-<app-races-table [races]="races$ | async"></app-races-table>
+<mat-select (valueChange)="year.next($event)" [value]="year | async">
+  <mat-option *ngFor="let year of yearOptions" [value]="year">
+    {{ year }}
+  </mat-option>
+</mat-select>
+<ng-container *ngIf="drivers$ | async as drivers">
+  <app-drivers-table [drivers]="drivers.data"></app-drivers-table>
+  <mat-paginator
+    [length]="drivers.total"
+    [pageSize]="drivers.limit"
+    [pageIndex]="drivers.offset / drivers.limit"
+    [pageSizeOptions]="paginatorOptions"
+    (page)="driversPageChange($event)"
+  ></mat-paginator>
+</ng-container>
+<ng-container *ngIf="races$ | async as races">
+  <app-races-table [races]="races.data"></app-races-table>
+  <mat-paginator
+    [length]="races.total"
+    [pageSize]="races.limit"
+    [pageIndex]="races.offset / races.limit"
+    [pageSizeOptions]="paginatorOptions"
+    (page)="racesPageChange($event)"
+  ></mat-paginator>
+</ng-container>

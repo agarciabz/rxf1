@@ -8,5 +8,14 @@ import { Race } from '../api.service';
 })
 export class RacesTableComponent {
   @Input()
-  public races: Race[] | null = [];
+  public races: Race[] = [];
+
+  public displayedColumns = [
+    'round',
+    'name',
+    'date',
+    'circuit',
+    'winner',
+    'time',
+  ];
 }

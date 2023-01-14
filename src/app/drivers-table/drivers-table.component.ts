@@ -8,5 +8,7 @@ import { Driver } from '../api.service';
 })
 export class DriversTableComponent {
   @Input()
-  public drivers: Driver[] | null = [];
+  public drivers: Driver[] = [];
+
+  public displayedColumns = ['permanentNumber', 'fullName', 'nationality'];
 }

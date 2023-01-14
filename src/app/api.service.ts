@@ -5,6 +5,12 @@ import * as mocks from './mocks';
 
 export type Driver = typeof mocks.drivers[number];
 export type Race = typeof mocks.races[number];
+export interface ApiResponse<T> {
+  limit: number;
+  offset: number;
+  total: number;
+  data: T;
+}
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -16,10 +22,21 @@ export class ApiService {
     year: string,
     limit: number,
     offset: number
-  ): Observable<Driver[]> {
+  ): Observable<ApiResponse<Driver[]>> {
     return this.httpClient
       .get(`${this.api}/${year}/drivers.json?limit=${limit}&offset=${offset}`)
-      .pipe(map((res: any) => res.MRData.DriverTable.Drivers));
+      .pipe(
+        map((res: any) => {
+          const { limit, offset, total } = res.MRData;
+          const data = res.MRData.DriverTable.Drivers;
+          return {
+            limit,
+            offset,
+            total,
+            data,
+          };
+        })
+      );
   }
 
   /**
@@ -30,12 +47,23 @@ export class ApiService {
     limit: number,
     offset: number,
     position = 1
-  ): Observable<Race[]> {
+  ): Observable<ApiResponse<Race[]>> {
     return this.httpClient
       .get(
         `${this.api}/${year}/results/${position}.json?limit=${limit}&offset=${offset}`
       )
-      .pipe(map((res: any) => res.MRData.RaceTable.Races));
+      .pipe(
+        map((res: any) => {
+          const { limit, offset, total } = res.MRData;
+          const data = res.MRData.RaceTable.Races;
+          return {
+            limit,
+            offset,
+            total,
+            data,
+          };
+        })
+      );
   }
 
   /**

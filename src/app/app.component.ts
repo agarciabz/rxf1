@@ -1,5 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { EMPTY, Observable } from 'rxjs';
+import { PageEvent } from '@angular/material/paginator';
+import {
+  BehaviorSubject,
+  combineLatest,
+  EMPTY,
+  Observable,
+  switchMap,
+} from 'rxjs';
 import { ApiService, Driver, Race } from './api.service';
 
 @Component({
@@ -7,21 +14,45 @@ import { ApiService, Driver, Race } from './api.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
 })
-export class AppComponent implements OnInit {
-  year = '2018';
-  title = 'rxf1';
-  limit = 10;
-  offset = 0;
+export class AppComponent {
+  public yearOptions = ['2018', '2019', '2020', '2021', '2022'];
+  public paginatorOptions = [10, 15, 25];
 
-  public drivers$: Observable<Driver[]> = EMPTY;
-  public races$: Observable<Race[]> = EMPTY;
+  public year = new BehaviorSubject(this.yearOptions[0]);
 
-  constructor(private api: ApiService) {
-    this.api.getStatuses('2020').subscribe(console.log);
+  public driversLimit = new BehaviorSubject(10);
+  public driversOffset = new BehaviorSubject(0);
+
+  public racesLimit = new BehaviorSubject(10);
+  public racesOffset = new BehaviorSubject(0);
+
+  public drivers$ = combineLatest([
+    this.year.asObservable(),
+    this.driversLimit.asObservable(),
+    this.driversOffset.asObservable(),
+  ]).pipe(
+    switchMap(([year, limit, offset]) =>
+      this.api.getDrivers(year, limit, offset)
+    )
+  );
+
+  public races$ = combineLatest([
+    this.year.asObservable(),
+    this.racesLimit.asObservable(),
+    this.racesOffset.asObservable(),
+  ]).pipe(
+    switchMap(([year, limit, offset]) => this.api.getRaces(year, limit, offset))
+  );
+
+  constructor(private api: ApiService) {}
+
+  driversPageChange(event: PageEvent) {
+    this.driversLimit.next(event.pageSize);
+    this.driversOffset.next(event.pageIndex * event.pageSize);
   }
 
-  ngOnInit(): void {
-    this.drivers$ = this.api.getDrivers(this.year, this.limit, this.offset);
-    this.races$ = this.api.getRaces(this.year, this.limit, this.offset);
+  racesPageChange(event: PageEvent) {
+    this.racesLimit.next(event.pageSize);
+    this.racesOffset.next(event.pageIndex * event.pageSize);
   }
 }
