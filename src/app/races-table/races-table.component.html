@@ -1,0 +1,32 @@
+<table>
+  <thead>
+    <tr>
+      <th>Round</th>
+      <th>Race name</th>
+      <th>Date</th>
+      <th>Circuit</th>
+      <th>Winner</th>
+      <th>Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let race of races">
+      <td>{{ race.round }}</td>
+      <td>{{ race.raceName }}</td>
+      <td>{{ race.date | date : "MMMM d" }}</td>
+      <td>
+        {{
+          race.Circuit.circuitName + " (" + race.Circuit.Location.country + ")"
+        }}
+      </td>
+      <td>
+        {{
+          race.Results[0].Driver.givenName +
+            " " +
+            race.Results[0].Driver.familyName
+        }}
+      </td>
+      <td>{{ race.Results[0].Time.time }}</td>
+    </tr>
+  </tbody>
+</table>

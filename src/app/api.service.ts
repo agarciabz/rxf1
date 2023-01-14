@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
+import * as mocks from './mocks';
+
+export type Driver = typeof mocks.drivers[number];
+export type Race = typeof mocks.races[number];
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -8,7 +12,11 @@ export class ApiService {
 
   constructor(private httpClient: HttpClient) {}
 
-  getDrivers(year: string, limit: number, offset: number): Observable<any[]> {
+  getDrivers(
+    year: string,
+    limit: number,
+    offset: number
+  ): Observable<Driver[]> {
     return this.httpClient
       .get(`${this.api}/${year}/drivers.json?limit=${limit}&offset=${offset}`)
       .pipe(map((res: any) => res.MRData.DriverTable.Drivers));
@@ -22,7 +30,7 @@ export class ApiService {
     limit: number,
     offset: number,
     position = 1
-  ): Observable<any[]> {
+  ): Observable<Race[]> {
     return this.httpClient
       .get(
         `${this.api}/${year}/results/${position}.json?limit=${limit}&offset=${offset}`

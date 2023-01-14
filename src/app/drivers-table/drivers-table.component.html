@@ -1,0 +1,16 @@
+<table>
+  <thead>
+    <tr>
+      <th>Number</th>
+      <th>Name</th>
+      <th>Nationality</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let driver of drivers">
+      <td>{{ driver.permanentNumber }}</td>
+      <td>{{ driver.givenName + " " + driver.familyName }}</td>
+      <td>{{ driver.nationality }}</td>
+    </tr>
+  </tbody>
+</table>
