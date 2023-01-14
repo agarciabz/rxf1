@@ -1,76 +1,80 @@
-<h1>Rx F1</h1>
-<!-- Year selector -->
-<div>Select a year</div>
-<mat-select (valueChange)="selectYear($event)" [value]="year$ | async">
-  <mat-option *ngFor="let year of yearOptions" [value]="year">
-    {{ year }}
-  </mat-option>
-</mat-select>
+<div class="main">
+  <h1>Rx F1</h1>
+  <!-- Year selector -->
+  <mat-form-field>
+    <mat-label>Select a year</mat-label>
+    <mat-select (valueChange)="selectYear($event)" [value]="year$ | async">
+      <mat-option *ngFor="let year of yearOptions" [value]="year">
+        {{ year }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
 
-<ng-container *ngIf="year$ | async as year">
-  <!-- Drivers -->
-  <div>Drivers for season {{ year }}</div>
-  <ng-container *ngIf="drivers$ | async as drivers">
-    <app-drivers-table [drivers]="drivers.data"></app-drivers-table>
-    <mat-paginator
-      [length]="drivers.total"
-      [pageSize]="drivers.limit"
-      [pageIndex]="drivers.offset / drivers.limit"
-      [pageSizeOptions]="paginatorOptions"
-      (page)="driversPageChange($event)"
-    ></mat-paginator>
+  <ng-container *ngIf="year$ | async as year">
+    <!-- Drivers -->
+    <h2>Drivers for season {{ year }}</h2>
+    <ng-container *ngIf="drivers$ | async as drivers">
+      <app-drivers-table [drivers]="drivers.data"></app-drivers-table>
+      <mat-paginator
+        [length]="drivers.total"
+        [pageSize]="drivers.limit"
+        [pageIndex]="drivers.offset / drivers.limit"
+        [pageSizeOptions]="paginatorOptions"
+        (page)="driversPageChange($event)"
+      ></mat-paginator>
+    </ng-container>
+    <!-- Races -->
+    <h2>Races for season {{ year }}</h2>
+    <h3>Select a race for more details</h3>
+    <ng-container *ngIf="races$ | async as races">
+      <app-races-table
+        [races]="races.data"
+        (selectRace)="raceSubject.next($event)"
+      ></app-races-table>
+      <mat-paginator
+        [length]="races.total"
+        [pageSize]="races.limit"
+        [pageIndex]="races.offset / races.limit"
+        [pageSizeOptions]="paginatorOptions"
+        (page)="racesPageChange($event)"
+      ></mat-paginator>
+    </ng-container>
   </ng-container>
-  <!-- Races -->
-  <div>Races for season {{ year }}</div>
-  <div>Select a race for more details</div>
-  <ng-container *ngIf="races$ | async as races">
-    <app-races-table
-      [races]="races.data"
-      (selectRace)="raceSubject.next($event)"
-    ></app-races-table>
-    <mat-paginator
-      [length]="races.total"
-      [pageSize]="races.limit"
-      [pageIndex]="races.offset / races.limit"
-      [pageSizeOptions]="paginatorOptions"
-      (page)="racesPageChange($event)"
-    ></mat-paginator>
-  </ng-container>
-</ng-container>
 
-<ng-container *ngIf="race$ | async as race">
-  <!-- Qualifying results -->
-  <div>Qualifying results for {{ race.raceName }}</div>
-  <ng-container *ngIf="qualifyingResults$ | async as results">
-    <app-results-table [results]="results.data"></app-results-table>
-    <mat-paginator
-      [length]="results.total"
-      [pageSize]="results.limit"
-      [pageIndex]="results.offset / results.limit"
-      [pageSizeOptions]="paginatorOptions"
-      (page)="resultsPageChange($event)"
-    ></mat-paginator>
+  <ng-container *ngIf="race$ | async as race">
+    <!-- Qualifying results -->
+    <h3>Qualifying results for {{ race.raceName }}</h3>
+    <ng-container *ngIf="qualifyingResults$ | async as results">
+      <app-results-table [results]="results.data"></app-results-table>
+      <mat-paginator
+        [length]="results.total"
+        [pageSize]="results.limit"
+        [pageIndex]="results.offset / results.limit"
+        [pageSizeOptions]="paginatorOptions"
+        (page)="resultsPageChange($event)"
+      ></mat-paginator>
+    </ng-container>
+    <!-- Standings -->
+    <h3>Driver standings for {{ race.raceName }}</h3>
+    <ng-container *ngIf="driverStandings$ | async as standings">
+      <app-standings-table [standings]="standings.data"></app-standings-table>
+      <mat-paginator
+        [length]="standings.total"
+        [pageSize]="standings.limit"
+        [pageIndex]="standings.offset / standings.limit"
+        [pageSizeOptions]="paginatorOptions"
+        (page)="standingsPageChange($event)"
+      ></mat-paginator>
+    </ng-container>
   </ng-container>
-  <!-- Standings -->
-  <div>Driver standings for {{ race.raceName }}</div>
-  <ng-container *ngIf="driverStandings$ | async as standings">
-    <app-standings-table [standings]="standings.data"></app-standings-table>
-    <mat-paginator
-      [length]="standings.total"
-      [pageSize]="standings.limit"
-      [pageIndex]="standings.offset / standings.limit"
-      [pageSizeOptions]="paginatorOptions"
-      (page)="standingsPageChange($event)"
-    ></mat-paginator>
-  </ng-container>
-</ng-container>
 
-<!-- Other data -->
-<ng-container *ngIf="year$ | async as year">
-  <div>Other stats for season {{ year }}</div>
-  <ul *ngIf="seasonStatus$ | async as statuses">
-    <li *ngFor="let status of statuses">
-      {{ status.status + ": " + status.count }}
-    </li>
-  </ul>
-</ng-container>
+  <!-- Other data -->
+  <ng-container *ngIf="year$ | async as year">
+    <h2>Other stats for season {{ year }}</h2>
+    <ul *ngIf="seasonStatus$ | async as statuses">
+      <li *ngFor="let status of statuses">
+        {{ status.status + ": " + status.count }}
+      </li>
+    </ul>
+  </ng-container>
+</div>

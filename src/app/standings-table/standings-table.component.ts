@@ -11,5 +11,5 @@ export class StandingsTableComponent {
   @Input()
   public standings: DriverStandings[] = [];
 
-  displayedColumns = ['position', 'points', 'driver', 'constructor'];
+  public displayedColumns = ['position', 'points', 'driver', 'constructor'];
 }
