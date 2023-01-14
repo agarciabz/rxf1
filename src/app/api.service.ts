@@ -5,6 +5,9 @@ import * as mocks from './mocks';
 
 export type Driver = typeof mocks.drivers[number];
 export type Race = typeof mocks.races[number];
+export type QualifyingResult = typeof mocks.results[number];
+export type DriverStandings = typeof mocks.standings[number];
+export type Status = typeof mocks.status[number];
 export interface ApiResponse<T> {
   limit: number;
   offset: number;
@@ -76,15 +79,26 @@ export class ApiService {
    */
   getRaceWithResults(
     year: string,
-    round: number,
+    round: string,
     limit: number,
     offset: number
-  ) {
+  ): Observable<ApiResponse<QualifyingResult[]>> {
     return this.httpClient
       .get(
         `${this.api}/${year}/${round}/qualifying.json?limit=${limit}&offset=${offset}`
       )
-      .pipe(map((res: any) => res.MRData.RaceTable.Races));
+      .pipe(
+        map((res: any) => {
+          const { limit, offset, total } = res.MRData;
+          const data = res.MRData.RaceTable.Races[0].QualifyingResults;
+          return {
+            limit,
+            offset,
+            total,
+            data,
+          };
+        })
+      );
   }
 
   /**
@@ -97,19 +111,26 @@ export class ApiService {
    */
   getDriverStandings(
     year: string,
-    round: number,
+    round: string,
     limit: number,
     offset: number
-  ) {
+  ): Observable<ApiResponse<DriverStandings[]>> {
     return this.httpClient
       .get(
         `${this.api}/${year}/${round}/driverStandings.json?limit=${limit}&offset=${offset}`
       )
       .pipe(
-        map(
-          (res: any) =>
-            res.MRData.StandingsTable.StandingsLists[0].DriverStandings
-        )
+        map((res: any) => {
+          const { limit, offset, total } = res.MRData;
+          const data =
+            res.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+          return {
+            limit,
+            offset,
+            total,
+            data,
+          };
+        })
       );
   }
 
@@ -120,9 +141,18 @@ export class ApiService {
    * @param offset
    * @returns
    */
-  getStatuses(year: string) {
-    return this.httpClient
-      .get(`${this.api}/${year}/status.json`)
-      .pipe(map((res: any) => res.MRData.StatusTable.Status));
+  getStatuses(year: string): Observable<ApiResponse<Status[]>> {
+    return this.httpClient.get(`${this.api}/${year}/status.json`).pipe(
+      map((res: any) => {
+        const { limit, offset, total } = res.MRData;
+        const data = res.MRData.StatusTable.Status;
+        return {
+          limit,
+          offset,
+          total,
+          data,
+        };
+      })
+    );
   }
 }

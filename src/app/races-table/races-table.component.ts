@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Race } from '../api.service';
 
 @Component({
@@ -9,6 +9,9 @@ import { Race } from '../api.service';
 export class RacesTableComponent {
   @Input()
   public races: Race[] = [];
+
+  @Output()
+  public selectRace = new EventEmitter<Race>();
 
   public displayedColumns = [
     'round',

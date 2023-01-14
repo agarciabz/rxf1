@@ -10,9 +10,11 @@ import { MatSelectModule } from '@angular/material/select';
 import { AppComponent } from './app.component';
 import { DriversTableComponent } from './drivers-table/drivers-table.component';
 import { RacesTableComponent } from './races-table/races-table.component';
+import { ResultsTableComponent } from './results-table/results-table.component';
+import { StandingsTableComponent } from './standings-table/standings-table.component';
 
 @NgModule({
-  declarations: [AppComponent, DriversTableComponent, RacesTableComponent],
+  declarations: [AppComponent, DriversTableComponent, RacesTableComponent, ResultsTableComponent, StandingsTableComponent],
   imports: [
     BrowserModule,
     HttpClientModule,
